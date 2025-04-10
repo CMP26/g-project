@@ -31,6 +31,45 @@ namespace our {
             //TODO: (Req 2) Write this function
             // remember to store the number of elements in "elementCount" since you will need it for drawing
             // For the attribute locations, use the constants defined above: ATTRIB_LOC_POSITION, ATTRIB_LOC_COLOR, etc
+
+            elementCount = static_cast<GLsizei>(elements.size());
+
+            glGenVertexArrays(1,&VAO);
+            // Start Bind Vao
+            glBindVertexArray(VAO);
+
+
+            glGenBuffers(1,&VBO);
+            glBindBuffer(GL_ARRAY_BUFFER,VBO);
+            glBufferData(GL_ARRAY_BUFFER,vertices.size()* sizeof(Vertex),vertices.data(),GL_STATIC_DRAW);
+
+
+            glGenBuffers(1,&EBO);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO); // This needed to be changed from GL_ARRAY_BUFFER to work
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER,elements.size()* sizeof(unsigned int), elements.data(),GL_STATIC_DRAW);
+
+
+            // Attributes
+
+            glEnableVertexAttribArray(ATTRIB_LOC_POSITION);
+            glVertexAttribPointer(ATTRIB_LOC_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
+        
+            // Color
+            glEnableVertexAttribArray(ATTRIB_LOC_COLOR);
+            glVertexAttribPointer(ATTRIB_LOC_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (void*)offsetof(Vertex, color));
+        
+            // TexCoord
+            glEnableVertexAttribArray(ATTRIB_LOC_TEXCOORD);
+            glVertexAttribPointer(ATTRIB_LOC_TEXCOORD, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tex_coord));
+        
+            // If you have normals:
+            glEnableVertexAttribArray(ATTRIB_LOC_NORMAL);
+            glVertexAttribPointer(ATTRIB_LOC_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
+        
+
+
+            // End // Unbinf VAO
+            glBindVertexArray(0);
             
         }
 
@@ -38,12 +77,18 @@ namespace our {
         void draw() 
         {
             //TODO: (Req 2) Write this function
+            glBindVertexArray(VAO); // Bind
+            glDrawElements(GL_TRIANGLES, elementCount, GL_UNSIGNED_INT, 0);
+            glBindVertexArray(0); // UnBind
         }
 
         // this function should delete the vertex & element buffers and the vertex array object
-        ~Mesh(){
-            //TODO: (Req 2) Write this function
+        ~Mesh() {
+            glDeleteBuffers(1, &VBO);  // Delete VBO
+            glDeleteBuffers(1, &EBO);  // Delete EBO
+            glDeleteVertexArrays(1, &VAO);  // Delete VAO
         }
+        
 
         Mesh(Mesh const &) = delete;
         Mesh &operator=(Mesh const &) = delete;

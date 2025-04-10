@@ -23,3 +23,16 @@ CMakeSettings.json
 
 # Screenshots
 screenshots/
+
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+
+
+vendor/glfw/src/glfw3.pc
+vendor/glfw/src/glfw3Config.cmake
+vendor/glfw/src/glfw3ConfigVersion.cmake
+vendor/glfw/src/glfw_config.h
+vendor/glfw/src/libglfw3.a
+

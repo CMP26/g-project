@@ -16,5 +16,5 @@ void main(){
     vec2 pixelPos = gl_FragCoord.xy;
     int x = int(pixelPos.x / size);
     int y = int(pixelPos.y / size);
-    frag_color = (x + y) % 2 == 0? colors[0] : colors[1];
+    frag_color = (x + y) % 2 == 0? vec4(colors[0], 1.0f) : vec4(colors[1], 1.0f);
 }

@@ -30,4 +30,7 @@ void main(){
     frag_color.g = dot(green, colorInput);
     frag_color.b = dot(blue, colorInput);
     frag_color.a = 1.0; // Assuming the alpha channel remains unchanged
+    if(red == vec4(0.0f, 0.0f, 0.0f, 0.0f) && green == vec4(0.0f, 0.0f, 0.0f, 0.0f) && blue == vec4(0.0f, 0.0f, 0.0f, 0.0f)) {
+        frag_color = colorInput;
+    }
 }

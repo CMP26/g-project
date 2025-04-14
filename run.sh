@@ -1,4 +1,3 @@
-#!bin/bash
-cmake .
-make
-./bin/GAME_APPLICATION -c='./config/transform-test/test-0.jsonc'
+#!/bin/bash
+./bin/GAME_APPLICATION -c='./config/pipeline-test/fc-3.jsonc'
+

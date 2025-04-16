@@ -39,7 +39,7 @@ namespace our
         Material::setup();
         if (shader)
         {
-            shader->set("u_tint", tint); // Send the tint color to the shader
+            shader->set("tint", tint);
         }
     }
 
@@ -59,11 +59,13 @@ namespace our
     {
         // TODO: (Req 7) Write this function
         Material::setup();
+
         if (shader && texture)
         {
-            shader->set("u_texture", 0);
-
-            // texture->bind(0);
+            shader->set("alphaThreshold", alphaThreshold);
+            texture->bind();
+            sampler->bind(0);
+            shader->set("tex", 0);
         }
     }
 

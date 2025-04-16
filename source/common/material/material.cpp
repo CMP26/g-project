@@ -8,6 +8,10 @@ namespace our {
     // This function should setup the pipeline state and set the shader to be used
     void Material::setup() const {
         //TODO: (Req 7) Write this function
+        pipelineState.setup();
+        if(shader){
+            shader->use();
+        }
     }
 
     // This function read the material data from a json object
@@ -25,6 +29,10 @@ namespace our {
     // set the "tint" uniform to the value in the member variable tint 
     void TintedMaterial::setup() const {
         //TODO: (Req 7) Write this function
+        Material::setup();
+        if (shader) {
+            shader->set("u_tint", tint);  // Send the tint color to the shader
+        }
     }
 
     // This function read the material data from a json object
@@ -39,6 +47,12 @@ namespace our {
     // Then it should bind the texture and sampler to a texture unit and send the unit number to the uniform variable "tex" 
     void TexturedMaterial::setup() const {
         //TODO: (Req 7) Write this function
+        Material::setup();
+        if (shader && texture) {
+            shader->set("u_texture", 0);
+
+            // texture->bind(0);
+        }
     }
 
     // This function read the material data from a json object

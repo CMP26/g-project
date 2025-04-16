@@ -73,6 +73,7 @@ namespace our
         void draw()
         {
             // TODO: (Req 2) Write this function
+            // glBindTexture(GL_TEXTURE_2D, shader.);
             glBindVertexArray(VAO); // Bind
             glDrawElements(GL_TRIANGLES, elementCount, GL_UNSIGNED_INT, 0);
             glBindVertexArray(0); // UnBind

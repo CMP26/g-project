@@ -36,26 +36,71 @@ class EntityTestState: public our::State {
         
     }
 
+    // void onDraw(double deltaTime) override {
+    //     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //     // First, we look for a camera and if none was found, we return (there is nothing we can render)
+    //     our::CameraComponent* camera = find<our::CameraComponent>(&world);
+    //     if(camera == nullptr) return;
+
+    //     // Then we compute the VP matrix from the camera
+    //     glm::ivec2 size = getApp()->getFrameBufferSize();
+    //     //TODO: (Req 8) Change the following line to compute the correct view projection matrix     DONE
+    //     glm::mat4 VP = camera->getProjectionMatrix(size) * camera->getViewMatrix();
+
+    //     for(auto& entity : world.getEntities()){
+    //         // For each entity, we look for a mesh renderer (if none was found, we skip this entity)
+    //         our::MeshRendererComponent* meshRenderer = entity->getComponent<our::MeshRendererComponent>();
+    //         if(meshRenderer == nullptr) continue;
+    //         //TODO: (Req 8) Complete the loop body to draw the current entity
+    //         // Then we setup the material, send the transform matrix to the shader then draw the mesh
+
+    //         if(meshRenderer->material) meshRenderer->material->setup();
+    //         auto shader = meshRenderer->material->shader;
+    //         glm::mat4 matrix = VP * entity->getLocalToWorldMatrix();
+    //         if(shader) {
+    //             shader->set("transform", matrix);
+    //         }
+    //         if(meshRenderer->mesh) meshRenderer->mesh->draw();
+    //     }
+    // }
+
     void onDraw(double deltaTime) override {
+        // Clear the screen and depth buffer
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        // First, we look for a camera and if none was found, we return (there is nothing we can render)
+    
+        // Find the main camera in the world
         our::CameraComponent* camera = find<our::CameraComponent>(&world);
-        if(camera == nullptr) return;
-
-        // Then we compute the VP matrix from the camera
+        if(camera == nullptr) return; // Nothing to render without a camera
+    
+        // Compute the View-Projection matrix using the framebuffer size
         glm::ivec2 size = getApp()->getFrameBufferSize();
-        //TODO: (Req 8) Change the following line to compute the correct view projection matrix 
-        glm::mat4 VP = glm::mat4(1.0f);
-
+        glm::mat4 VP = camera->getProjectionMatrix(size) * camera->getViewMatrix();
+    
+        // Loop through all entities in the world
         for(auto& entity : world.getEntities()){
-            // For each entity, we look for a mesh renderer (if none was found, we skip this entity)
-            our::MeshRendererComponent* meshRenderer = entity->getComponent<our::MeshRendererComponent>();
-            if(meshRenderer == nullptr) continue;
-            //TODO: (Req 8) Complete the loop body to draw the current entity
-            // Then we setup the material, send the transform matrix to the shader then draw the mesh
+            // Skip entities without a MeshRendererComponent
+            auto* meshRenderer = entity->getComponent<our::MeshRendererComponent>();
+            if(!meshRenderer) continue;
+    
+            // Setup the material
+            if(meshRenderer->material) {
+                meshRenderer->material->setup();
+    
+                // Compute the model-to-world transformation matrix
+                glm::mat4 M = entity->getLocalToWorldMatrix();
+                glm::mat4 transform = VP * M;
+    
+                // Send the final transform matrix to the shader
+                if(meshRenderer->material->shader)
+                    meshRenderer->material->shader->set("transform", transform);
+            }
+    
+            // Draw the mesh
+            if(meshRenderer->mesh)
+                meshRenderer->mesh->draw();
         }
     }
-
+    
     void onDestroy() override {
         world.clear();
         our::clearAllAssets();

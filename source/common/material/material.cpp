@@ -60,6 +60,8 @@ namespace our
         // TODO: (Req 7) Write this function
         Material::setup();
 
+        shader->set("tint", tint);
+
         if (shader && texture)
         {
             shader->set("alphaThreshold", alphaThreshold);

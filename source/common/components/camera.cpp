@@ -2,6 +2,7 @@
 #include "../ecs/entity.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp> 
+#include <iostream>
 
 namespace our {
     // Reads camera parameters from the given json object
@@ -22,7 +23,7 @@ namespace our {
     // Creates and returns the camera view matrix
     glm::mat4 CameraComponent::getViewMatrix() const {
         auto owner = getOwner();
-        auto M = owner->getLocalToWorldMatrix();
+        auto M_localworld_mat = owner->getLocalToWorldMatrix();
         //TODO: (Req 8) Complete this function "DONE"
         //HINT:
         // In the camera space:
@@ -36,9 +37,9 @@ namespace our {
         // - the up direction which is the vector (0,1,0) but after being transformed by M
         // then you can use glm::lookAt
 
-        glm::vec3 eye = glm::vec3(M * glm::vec4(0, 0, 0, 1));
-        glm::vec3 center = glm::vec3(M * glm::vec4(0, 0, -1, 1));
-        glm::vec3 up = glm::vec3(M * glm::vec4(0, 1, 0, 0));
+        glm::vec3 eye = glm::vec3(M_localworld_mat * glm::vec4(0, 0, 0, 1));
+        glm::vec3 center = glm::vec3(M_localworld_mat * glm::vec4(0, 0, -1, 1));
+        glm::vec3 up = glm::vec3(M_localworld_mat * glm::vec4(0, 1, 0, 0));
 
         return glm::lookAt(eye,center,up);
     }
@@ -52,19 +53,21 @@ namespace our {
         // Left and Right are the same but after being multiplied by the aspect ratio
         // For the perspective camera, you can use glm::perspective
 
-        float aspectRatio = viewportSize.x / viewportSize.y;
+        float aspectRatio = static_cast<float>(viewportSize.x) / static_cast<float>(viewportSize.y);
+
+        
 
         if(cameraType == CameraType::ORTHOGRAPHIC){
 
             float vertical_half = orthoHeight / 2.0f;
             float horizontal_half = vertical_half * aspectRatio;
     
-            return glm::ortho(-horizontal_half,horizontal_half,-vertical_half,vertical_half);
-            // return glm::ortho(horizontal_half,-horizontal_half,-vertical_half,vertical_half,near,far);  // I don't know yet ??? :)
+            // return glm::ortho(-horizontal_half,horizontal_half,-vertical_half,vertical_half);
+            return glm::ortho(horizontal_half,-horizontal_half,-vertical_half,vertical_half,near,far);  // I don't know yet ??? :)
 
         }
         else if (cameraType == CameraType::PERSPECTIVE){
-            
+
             return glm::perspective(fovY,aspectRatio,near,far);
 
         }

@@ -57,12 +57,12 @@ namespace our {
             markedForRemoval.clear();
         }
 
-        void addEntity(Entity* entity){
-            if(entity){
-                entity->world = this;
-                entities.insert(entity);
-            }
-        }
+        // void addEntity(Entity* entity){
+        //     if(entity){
+        //         entity->world = this;
+        //         entities.insert(entity);
+        //     }
+        // }
 
         //This deletes all entities in the world
         void clear(){

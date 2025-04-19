@@ -59,7 +59,7 @@ namespace our
 
             // TexCoord
             glEnableVertexAttribArray(ATTRIB_LOC_TEXCOORD);
-            glVertexAttribPointer(ATTRIB_LOC_TEXCOORD, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, tex_coord));
+            glVertexAttribPointer(ATTRIB_LOC_TEXCOORD, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, tex_coord));
 
             // If you have normals:
             glEnableVertexAttribArray(ATTRIB_LOC_NORMAL);
@@ -73,10 +73,10 @@ namespace our
         void draw()
         {
             // TODO: (Req 2) Write this function
-            // glBindTexture(GL_TEXTURE_2D, shader.);
-            glBindVertexArray(VAO); // Bind
+            // glActiveTexture(GL_TEXTURE0);
+            glBindVertexArray(VAO);
             glDrawElements(GL_TRIANGLES, elementCount, GL_UNSIGNED_INT, 0);
-            glBindVertexArray(0); // UnBind
+            glBindVertexArray(0);
         }
 
         // this function should delete the vertex & element buffers and the vertex array object

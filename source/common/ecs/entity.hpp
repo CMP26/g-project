@@ -6,6 +6,7 @@
 #include <iterator>
 #include <string>
 #include <glm/glm.hpp>
+#include <iostream>
 
 namespace our {
 
@@ -99,19 +100,7 @@ namespace our {
         void deleteComponent(T const* component){
             //TODO: (Req 8) Go through the components list and find the given component "component".   DONE
             // If found, delete the found component and remove it from the components list
-
-            // for(auto it = components.begin(); it != components.end(); ++it){
-            //     T*casted = dynamic_cast<T*>(*it);
-            //     if(casted) {
-            //         if(casted == component) {
-            //             delete *it;
-            //             components.erase(it);
-            //             return;
-            //         }
-            //     }
-            // }
-            // The above approach has a bug
-            auto it = std::find(components.begin(), components.end(), component);  //Chat approach
+            auto it = std::find(components.begin(), components.end(), component);  //Chatgpt approach
             if(it != components.end()) {
                 delete *it;
                 components.erase(it);
@@ -132,8 +121,6 @@ namespace our {
             //TODO: (Req 8) Delete all the components in "components".   DONE
             deleteAllComponents();
         }
-
-
 
         // Entities should not be copyable
         Entity(const Entity&) = delete;

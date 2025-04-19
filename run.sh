@@ -1,7 +1,6 @@
 #!/bin/bash
-cmake .
- 
-make
+cmake --build build
 
-./bin/GAME_APPLICATION -c='./config/entity-test/test-1.jsonc'
+./bin/GAME_APPLICATION -c='./config/material-test/test-0.jsonc'
+./bin/GAME_APPLICATION -c='./config/material-test/test-1.jsonc'
 

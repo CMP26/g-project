@@ -1,17 +1,23 @@
 #include "camera.hpp"
 #include "../ecs/entity.hpp"
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp> 
+#include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 
-namespace our {
+namespace our
+{
     // Reads camera parameters from the given json object
-    void CameraComponent::deserialize(const nlohmann::json& data){
-        if(!data.is_object()) return;
+    void CameraComponent::deserialize(const nlohmann::json &data)
+    {
+        if (!data.is_object())
+            return;
         std::string cameraTypeStr = data.value("cameraType", "perspective");
-        if(cameraTypeStr == "orthographic"){
+        if (cameraTypeStr == "orthographic")
+        {
             cameraType = CameraType::ORTHOGRAPHIC;
-        } else {
+        }
+        else
+        {
             cameraType = CameraType::PERSPECTIVE;
         }
         near = data.value("near", 0.01f);
@@ -21,55 +27,55 @@ namespace our {
     }
 
     // Creates and returns the camera view matrix
-    glm::mat4 CameraComponent::getViewMatrix() const {
+    glm::mat4 CameraComponent::getViewMatrix() const
+    {
         auto owner = getOwner();
         auto M_localworld_mat = owner->getLocalToWorldMatrix();
-        //TODO: (Req 8) Complete this function "DONE"
-        //HINT:
-        // In the camera space:
-        // - eye is the origin (0,0,0)
-        // - center is any point on the line of sight. So center can be any point (0,0,z) where z < 0. For simplicity, we let center be (0,0,-1)
-        // - up is the direction (0,1,0)
-        // but to use glm::lookAt, we need eye, center and up in the world state.
-        // Since M (see above) transforms from the camera to thw world space, you can use M to compute:
-        // - the eye position which is the point (0,0,0) but after being transformed by M
-        // - the center position which is the point (0,0,-1) but after being transformed by M
-        // - the up direction which is the vector (0,1,0) but after being transformed by M
-        // then you can use glm::lookAt
+        // TODO: (Req 8) Complete this function "DONE"
+        // HINT:
+        //  In the camera space:
+        //  - eye is the origin (0,0,0)
+        //  - center is any point on the line of sight. So center can be any point (0,0,z) where z < 0. For simplicity, we let center be (0,0,-1)
+        //  - up is the direction (0,1,0)
+        //  but to use glm::lookAt, we need eye, center and up in the world state.
+        //  Since M (see above) transforms from the camera to thw world space, you can use M to compute:
+        //  - the eye position which is the point (0,0,0) but after being transformed by M
+        //  - the center position which is the point (0,0,-1) but after being transformed by M
+        //  - the up direction which is the vector (0,1,0) but after being transformed by M
+        //  then you can use glm::lookAt
 
         glm::vec3 eye = glm::vec3(M_localworld_mat * glm::vec4(0, 0, 0, 1));
         glm::vec3 center = glm::vec3(M_localworld_mat * glm::vec4(0, 0, -1, 1));
         glm::vec3 up = glm::vec3(M_localworld_mat * glm::vec4(0, 1, 0, 0));
 
-        return glm::lookAt(eye,center,up);
+        return glm::lookAt(eye, center, up);
     }
 
     // Creates and returns the camera projection matrix
     // "viewportSize" is used to compute the aspect ratio
-    glm::mat4 CameraComponent::getProjectionMatrix(glm::ivec2 viewportSize) const {
-        //TODO: (Req 8) Wrtie this function  "DONE ALMOST"
-        // NOTE: The function glm::ortho can be used to create the orthographic projection matrix
-        // It takes left, right, bottom, top. Bottom is -orthoHeight/2 and Top is orthoHeight/2.
-        // Left and Right are the same but after being multiplied by the aspect ratio
-        // For the perspective camera, you can use glm::perspective
+    glm::mat4 CameraComponent::getProjectionMatrix(glm::ivec2 viewportSize) const
+    {
+        // TODO: (Req 8) Wrtie this function  "DONE ALMOST"
+        //  NOTE: The function glm::ortho can be used to create the orthographic projection matrix
+        //  It takes left, right, bottom, top. Bottom is -orthoHeight/2 and Top is orthoHeight/2.
+        //  Left and Right are the same but after being multiplied by the aspect ratio
+        //  For the perspective camera, you can use glm::perspective
 
         float aspectRatio = static_cast<float>(viewportSize.x) / static_cast<float>(viewportSize.y);
 
-        
-
-        if(cameraType == CameraType::ORTHOGRAPHIC){
+        if (cameraType == CameraType::ORTHOGRAPHIC)
+        {
 
             float vertical_half = orthoHeight / 2.0f;
             float horizontal_half = vertical_half * aspectRatio;
-    
+
             // return glm::ortho(-horizontal_half,horizontal_half,-vertical_half,vertical_half);
-            return glm::ortho(horizontal_half,-horizontal_half,-vertical_half,vertical_half,near,far);  // I don't know yet ??? :)
-
+            return glm::ortho(horizontal_half, -horizontal_half, -vertical_half, vertical_half, near, far); // I don't know yet ??? :)
         }
-        else if (cameraType == CameraType::PERSPECTIVE){
+        else if (cameraType == CameraType::PERSPECTIVE)
+        {
 
-            return glm::perspective(fovY,aspectRatio,near,far);
-
+            return glm::perspective(fovY, aspectRatio, near, far);
         }
 
         assert("Unknown Camera Type (You shouldn't be here)");

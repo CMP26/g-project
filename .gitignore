@@ -21,7 +21,9 @@ CMakeSettings.json
 # Visual Studio Code specific files
 .vscode/
 
+# screenshots
 
+screenshots/
 
 CMakeCache.txt
 CMakeFiles/

@@ -10,10 +10,9 @@ namespace our {
         for(const auto& entityData : data){
             //TODO: (Req 8) Create an entity, make its parent "parent" and call its deserialize with "entityData".      DONE
             
-            Entity* entity = new Entity();
+            Entity* entity = this->add();
             entity->parent = parent;
             entity->deserialize(entityData);
-            this->addEntity(entity);
 
             if(entityData.contains("children")){
                 //TODO: (Req 8) Recursively call this world's "deserialize" using the children data    DONE
